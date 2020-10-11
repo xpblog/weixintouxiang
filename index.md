@@ -1,37 +1,144 @@
-## Welcome to GitHub Pages
 
-You can use the [editor on GitHub](https://github.com/xpblog/weixintouxiang/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+<html lang="en">
+<head>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width,maximum-scale=1.0,minimum-scale=1.0'>
+  <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+  <title>微信头像</title>
+  <style>
+    a:link{color:#fff;text-decoration: none;}
+    a:visited{color:#fff;}
+    #export{display:none;margin:0 auto;width:250px;height:250px;margin-top:50px;margin-bottom:50px}
+    .operation-btns .o-btn1{background-size:11.6rem 4.325rem}
+    .operation-btns .o-btn2{background-size:11.6rem 3.75rem}
+    center{color: #fff;}
+  </style>
+  <link rel="stylesheet" type="text/css" href="https://qnlite.gtimg.com/qqnewslite/css/r-nationaldayhead.872d8e4c.css">
+</head>
+<body>
+  <div class="wrapper">
+    <img src="" alt="" class="img-load" style="width: 9.5rem; position: fixed; top: 0px; left: -9999px;">
+    <div class="operation-header">
+      <div class="h--title">
+        
+      </div>
+    </div>
+    <div class="operation-box">
+      <a class="prev" onClick='changeHat()'></a>
+      <div class="operation-img">
+        <div class="cropper-content" id="content">
+          <canvas class="" id='cvs'></canvas>
+        </div>
+      </div>
+      <a class="next" onClick='changeHat()'></a>
+    </div>
+    <img id='export' alt='专属头像' src='' />
+    <div class="operation-btns">
+      <a class="o-btn1">
+        <input class="o-btn1" id='upload' type='file' onchange='viewer()' style='opacity: 0;'>
+      </a>
+      <a class="o-btn2" onClick='exportFunc()' style="display: none;">
+      </a>
+    </div>
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+  </div>
+  <div style='display: none'>
+    <img id='img' src='' alt='' />
+    <img class='hide' id='hat0' src='./hat0.png' />
+    <img class='hide' id='hat1' src='./hat1.png' />
+    <img class='hide' id='hat2' src='./hat2.png' />
+    <img class='hide' id='hat3' src='./hat3.png' />
+  </div>
 
-### Markdown
+<script src="https://lib.baomitu.com/fabric.js/2.0.0-rc.3/fabric.min.js"></script>
+<script>
+  var cvs = document.getElementById("cvs");
+  var ctx = cvs.getContext("2d");
+  var exportImage = document.getElementById("export");
+  var img = document.getElementById("img");
+  var hat = "hat0";
+  var canvasFabric;
+  var hatInstance;
+  //var screenWidth = window.screen.width < 500 ? window.screen.width : 300;
+  var screenWidth = document.getElementById("content").scrollHeight;
+  function viewer() {
+    var file = document.getElementById("upload").files[0];
+    console.log(file);
+    var reader = new FileReader;
+    if (file) {
+      reader.readAsDataURL(file);
+      reader.onload = function(e) {
+        img.src = reader.result;
+        img.onload = function() {
+          img2Cvs(img)
+        }
+      }
+    } else {
+      img.src = ""
+    }
+  }
+  function img2Cvs(img) {
+    cvs.width = img.width;
+    cvs.height = img.height;
+    cvs.style.display = "block";
+    canvasFabric = new fabric.Canvas("cvs", {
+      width: screenWidth,
+      height: screenWidth,
+      backgroundImage: new fabric.Image(img, {
+        scaleX: screenWidth / img.width,
+        scaleY: screenWidth / img.height
+      })
+    });
+    changeHat();
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+    document.getElementsByClassName("o-btn1")[0].style.display = "none";
+    document.getElementsByClassName("o-btn2")[0].style.display = "block";
+    //document.getElementById("tip").style.opacity = 1
+  }
+  function changeHat() {
+    document.getElementById(hat).style.display = "none";
+    var hats = document.getElementsByClassName("hide");
+    hat = "hat" + (+hat.replace("hat", "") + 1) % hats.length;
+    var hatImage = document.getElementById(hat);
+    hatImage.style.display = "block";
+    if (hatInstance) {
+      canvasFabric.remove(hatInstance)
+    }
+    console.log(hatImage.width);
+    console.log(100 / hatImage.width);
+    hatInstance = new fabric.Image(hatImage, {
+      top: 0,
+      left: 0,
+      scaleX: screenWidth / hatImage.width,
+      scaleY: screenWidth / hatImage.height,
+      cornerColor: "#0b3a42",
+      cornerStrokeColor: "#fff",
+      cornerStyle: "circle",
+      transparentCorners: false,
+      rotatingPointOffset: 30
+    });
+    hatInstance.setControlVisible("bl", false);
+    hatInstance.setControlVisible("tr", false);
+    hatInstance.setControlVisible("tl", false);
+    hatInstance.setControlVisible("mr", false);
+    hatInstance.setControlVisible("mt", false);
+    canvasFabric.add(hatInstance)
+  }
+  function exportFunc() {
+    document.getElementsByClassName("operation-box")[0].style.display = "none";
+    document.getElementsByClassName("operation-btns")[0].style.display = "none";
 
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/xpblog/weixintouxiang/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+    /*document.getElementById("exportBtn").style.display = "none";
+    document.getElementById("tip").innerHTML = "长按图片保存或分享";
+    document.getElementById("change").style.display = "none";*/
+    cvs.style.display = "none";
+    exportImage.style.display = "block";
+    exportImage.src = canvasFabric.toDataURL({
+      width: screenWidth,
+      height: screenWidth
+    });
+    alert('长按图片保存或分享');
+  }
+</script>
+</html>
